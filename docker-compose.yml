@@ -1,0 +1,32 @@
+version: '3'
+
+services: 
+  web: 
+    container_name: my_flask_project
+    build: .
+    command: "flask run --host 0.0.0.0 --port 5000"
+    ports: 
+      - "7000:5000"
+    environment: 
+      FLASK_APP: "main.py"
+    depends_on: 
+      - "redis"
+
+  redis:
+    image: redis
+    ports: 
+      - "6380:6379"
+    volumes: 
+      - ./redisdata:/data
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
